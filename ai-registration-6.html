@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Future Summit 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<style>
+:root{
+  --primary:#ff6b00;
+  --primary2:#ff9d4d;
+  --bg:#fff8f2;
+  --text:#111827;
+  --muted:#6b7280;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+body{ font-family:'Inter',sans-serif; background:var(--bg); overflow-x:hidden; color:var(--text); position:relative; }
+canvas#bg{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+.container{ position:relative; z-index:2; width:100%; max-width:1200px; margin:auto; padding:24px; }
+
+/* HERO */
+.hero{ position:relative; min-height:720px; border-radius:40px; overflow:hidden; margin-bottom:36px; box-shadow:0 30px 80px rgba(0,0,0,0.16); }
+.hero img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.hero-overlay{ position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,.9),rgba(0,0,0,.45),rgba(0,0,0,.2)); }
+.hero-content{ position:relative; z-index:2; height:100%; padding:70px; display:flex; flex-direction:column; justify-content:flex-end; color:white; }
+.hero-pill{ align-self:flex-start; padding:10px 18px; border-radius:100px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(12px); font-size:12px; font-weight:700; letter-spacing:.08em; margin-bottom:24px; }
+.hero h1{ font-family:'Outfit',sans-serif; font-size:78px; line-height:.95; font-weight:800; margin-bottom:24px; max-width:760px; }
+.hero-sub{ max-width:760px; line-height:1.8; color:rgba(255,255,255,.88); font-size:20px; margin-bottom:30px; }
+.event-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.event-card{ background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); backdrop-filter:blur(16px); border-radius:24px; padding:20px; transition:.25s; }
+.event-card:hover{ transform:translateY(-5px); }
+.event-card i{ font-size:20px; color:#ffb074; margin-bottom:14px; }
+.event-card span{ display:block; font-size:11px; text-transform:uppercase; opacity:.7; margin-bottom:6px; }
+.event-card strong{ line-height:1.6; font-size:15px; }
+
+/* LAYOUT */
+.layout{ display:grid; grid-template-columns:1fr 400px; gap:28px; }
+
+/* CHAT */
+.chat-panel{ background:rgba(255,255,255,.68); backdrop-filter:blur(18px); border-radius:34px; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,.08); }
+.chat-top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:26px; }
+.brand{ display:flex; gap:12px; align-items:center; }
+.brand-icon{ width:42px; height:42px; border-radius:14px; background:linear-gradient(135deg,var(--primary),var(--primary2)); display:flex; align-items:center; justify-content:center; color:white; }
+.brand h3{ font-family:'Outfit',sans-serif; font-size:20px; }
+.brand p{ font-size:13px; color:var(--muted); }
+.live-pill{ padding:8px 14px; border-radius:100px; background:#fff0e5; color:var(--primary); font-size:12px; font-weight:700; }
+.progress{ width:100%; height:6px; background:#f4dfd0; border-radius:100px; overflow:hidden; margin-bottom:30px; }
+.progress-fill{ width:0%; height:100%; background:linear-gradient(90deg,var(--primary),var(--primary2)); transition:.4s; }
+.chat-feed{ display:flex; flex-direction:column; gap:20px; }
+
+.bot-row{ display:flex; gap:12px; align-items:flex-start; animation:fadeUp .4s ease forwards; }
+.bot-avatar{ width:38px; height:38px; border-radius:50%; background:linear-gradient(135deg,var(--primary),var(--primary2)); display:flex; align-items:center; justify-content:center; color:white; flex-shrink:0; }
+.bot-bubble{ background:white; padding:18px; border-radius:0 20px 20px 20px; max-width:560px; line-height:1.8; box-shadow:0 10px 30px rgba(0,0,0,.05); }
+.bot-bubble strong{ color:var(--primary); }
+
+.user-row{ display:flex; justify-content:flex-end; animation:fadeUp .4s ease forwards; }
+.user-bubble{ background:linear-gradient(135deg,var(--primary),var(--primary2)); color:white; padding:14px 18px; border-radius:20px 0 20px 20px; max-width:420px; line-height:1.6; }
+
+.choices{ display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
+.choice-btn{ border:1.5px solid #f0e8e0; background:white; padding:12px 18px; border-radius:100px; font-weight:600; cursor:pointer; transition:.2s; font-family:'Inter',sans-serif; font-size:14px; }
+.choice-btn:hover{ transform:translateY(-2px); background:var(--primary); color:white; border-color:var(--primary); }
+.choice-btn.selected{ background:var(--primary); color:white; border-color:var(--primary); }
+.choice-btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none; }
+
+.text-input-wrap{ margin-top:18px; display:flex; gap:10px; }
+.text-input{ flex:1; border:1.5px solid #f0e8e0; outline:none; padding:14px 16px; border-radius:16px; background:white; font-size:15px; font-family:'Inter',sans-serif; transition:border-color .2s; }
+.text-input:focus{ border-color:var(--primary); }
+.text-input::placeholder{ color:#bbb; }
+.send-btn{ width:46px; height:46px; background:linear-gradient(135deg,var(--primary),var(--primary2)); border:none; border-radius:14px; color:white; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:.2s; }
+.send-btn:hover{ opacity:.88; }
+.input-error{ font-size:12px; color:#ef4444; margin-top:6px; display:none; }
+
+/* SIDE */
+.side{ position:sticky; top:24px; height:fit-content; background:rgba(255,255,255,.68); backdrop-filter:blur(18px); border-radius:34px; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,.08); }
+.side h3{ font-family:'Outfit',sans-serif; font-size:30px; margin-bottom:14px; }
+.side > p{ color:var(--muted); line-height:1.8; margin-bottom:24px; }
+.feature{ display:flex; gap:14px; margin-bottom:20px; }
+.feature-icon{ width:42px; height:42px; border-radius:14px; background:#fff0e5; display:flex; align-items:center; justify-content:center; color:var(--primary); flex-shrink:0; }
+.feature strong{ display:block; margin-bottom:5px; }
+.feature span{ font-size:13px; color:var(--muted); }
+
+/* PAYMENT */
+.payment-wrap,.paylater-wrap{ display:none; margin-top:24px; }
+.payment-card,.paylater-card{ background:white; border-radius:28px; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,.08); }
+.payment-card h2,.paylater-card h2{ font-family:'Outfit',sans-serif; font-size:30px; margin-bottom:10px; }
+.payment-card > p,.paylater-card > p{ line-height:1.8; color:var(--muted); margin-bottom:22px; font-size:14px; }
+.input-group{ margin-bottom:16px; }
+.input-group label{ display:block; margin-bottom:7px; font-weight:600; font-size:13px; }
+.input-group input{ width:100%; border:1.5px solid #f0e8e0; background:#f3f4f6; padding:13px 15px; border-radius:14px; outline:none; font-family:'Inter',sans-serif; font-size:14px; color:#888; cursor:not-allowed; }
+.pay-error{ font-size:12px; color:#ef4444; background:#fef2f2; border:1px solid #fee2e2; padding:10px; border-radius:10px; margin-bottom:14px; display:none; font-family:'Inter',sans-serif; }
+.pay-btn,.return-btn{ width:100%; border:none; background:linear-gradient(135deg,var(--primary),var(--primary2)); color:white; padding:15px; border-radius:16px; font-weight:700; cursor:pointer; transition:.2s; font-size:15px; font-family:'Inter',sans-serif; display:flex; align-items:center; justify-content:center; gap:8px; }
+.pay-btn:hover,.return-btn:hover{ transform:translateY(-2px); opacity:.92; }
+.pay-btn:disabled{ opacity:.45; cursor:not-allowed; transform:none; }
+.pay-spinner{ width:15px; height:15px; border:2px solid rgba(255,255,255,.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; display:none; }
+.pay-secure{ display:flex; align-items:center; justify-content:center; gap:6px; margin-top:10px; font-size:11px; color:#94a3b8; }
+
+/* SUMMARY BOX */
+.summary-box{ background:#fff8f2; border:1px solid rgba(255,107,0,0.15); border-radius:14px; padding:14px 16px; margin-bottom:20px; }
+.summary-box p{ font-size:13px; color:var(--muted); margin-bottom:4px; }
+.summary-box p span{ color:var(--text); font-weight:600; }
+
+/* SUCCESS */
+.success{ display:none; text-align:center; }
+.success-icon{ width:72px; height:72px; border-radius:50%; background:#22c55e; color:white; display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 18px; }
+.success h2{ font-family:'Outfit',sans-serif; font-size:34px; margin-bottom:10px; }
+.success p{ color:var(--muted); line-height:1.8; margin-bottom:16px; font-size:14px; }
+.ref{ background:#f3f4f6; padding:14px 16px; border-radius:12px; font-family:monospace; font-size:12px; text-align:left; }
+.ref span{ color:var(--primary); }
+
+/* TYPING */
+.typing{ display:flex; gap:6px; padding:6px 0; }
+.typing span{ width:8px; height:8px; border-radius:50%; background:#ffb074; animation:bounce 1s infinite; }
+.typing span:nth-child(2){ animation-delay:.2s; }
+.typing span:nth-child(3){ animation-delay:.4s; }
+@keyframes bounce{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:translateY(0); } }
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* MOBILE */
+@media(max-width:1000px){
+  .layout{ grid-template-columns:1fr; }
+  .event-grid{ grid-template-columns:repeat(2,1fr); }
+  .hero h1{ font-size:56px; }
+  .side{ position:static; }
+}
+@media(max-width:700px){
+  .hero{ min-height:850px; }
+  .hero-content{ padding:36px; }
+  .hero h1{ font-size:42px; }
+  .event-grid{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+<canvas id="bg"></canvas>
+
+<div class="container">
+
+  <section class="hero">
+    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1600&auto=format&fit=crop">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-pill">LIMITED SEATS AVAILABLE</div>
+      <h1>AI Future Summit 2026</h1>
+      <div class="hero-sub">Discover how artificial intelligence is transforming careers, business, creativity, and innovation through immersive workshops, live demos, and networking experiences.</div>
+      <div class="event-grid">
+        <div class="event-card">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>Venue</span>
+          <strong>Accra International Conference Centre</strong>
+        </div>
+        <div class="event-card">
+          <i class="fa-solid fa-calendar"></i>
+          <span>Date</span>
+          <strong>Saturday, August 16 2026</strong>
+        </div>
+        <div class="event-card">
+          <i class="fa-solid fa-clock"></i>
+          <span>Time</span>
+          <strong>9:00 AM — 4:00 PM</strong>
+        </div>
+        <div class="event-card">
+          <i class="fa-solid fa-users"></i>
+          <span>Experience</span>
+          <strong>Networking, AI Demos & Workshops</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="layout">
+
+    <div class="chat-panel">
+      <div class="chat-top">
+        <div class="brand">
+          <div class="brand-icon"><i class="fa-solid fa-brain"></i></div>
+          <div>
+            <h3>AI Registration Assistant</h3>
+            <p>Interactive onboarding experience</p>
+          </div>
+        </div>
+        <div class="live-pill">LIVE REGISTRATION</div>
+      </div>
+      <div class="progress">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="chat-feed" id="chatFeed"></div>
+    </div>
+
+    <div class="side">
+      <h3>Why Attend?</h3>
+      <p>This summit is designed to help you understand, experience, and apply AI in practical and exciting ways.</p>
+      <div class="feature">
+        <div class="feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div><strong>Live AI Demonstrations</strong><span>See powerful AI workflows in action.</span></div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><i class="fa-solid fa-briefcase"></i></div>
+        <div><strong>Career Opportunities</strong><span>Explore how AI is reshaping industries.</span></div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><i class="fa-solid fa-network-wired"></i></div>
+        <div><strong>Networking</strong><span>Meet professionals, founders, and creators.</span></div>
+      </div>
+
+      <!-- PAYMENT -->
+      <div class="payment-wrap" id="paymentWrap">
+        <div class="payment-card">
+          <div id="paymentForm">
+            <h2>Secure Your Seat</h2>
+            <p>Your details are confirmed. Complete payment to lock in your spot.</p>
+
+            <!-- Read-only summary of what was collected in chat -->
+            <div class="summary-box">
+              <p>Name &nbsp;<span id="summaryName"></span></p>
+              <p>Email &nbsp;<span id="summaryEmail"></span></p>
+              <p>Phone &nbsp;<span id="summaryPhone"></span></p>
+            </div>
+
+            <div class="input-group">
+              <label>Registration Fee</label>
+              <input type="text" value="GHS 500.00" readonly />
+            </div>
+
+            <div class="pay-error" id="payError"></div>
+
+            <button class="pay-btn" id="payBtn" onclick="launchPaystack()">
+              <span id="payBtnText">Pay GHS 500.00</span>
+              <div class="pay-spinner" id="paySpinner"></div>
+              <i class="fa-solid fa-arrow-right" id="payBtnIcon"></i>
+            </button>
+
+            <div class="pay-secure">
+              <i class="fa-solid fa-lock" style="font-size:10px"></i>
+              Secured by Paystack &middot; Test Mode
+            </div>
+          </div>
+
+          <div class="success" id="successBox">
+            <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+            <h2>You're In 🚀</h2>
+            <p>Your registration was successful. We cannot wait to see you at the summit.</p>
+            <div class="ref">REF: <span id="successRef"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAY LATER -->
+      <div class="paylater-wrap" id="payLaterWrap">
+        <div class="paylater-card">
+          <h2>We'll Be Waiting 🚀</h2>
+          <p>AI Future Summit 2026 is shaping up to be an unforgettable experience. Whenever you're ready, come back and complete your registration to secure your seat.</p>
+          <button class="return-btn" onclick="showPayment()">Return To Payment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxbvtlfyvZnhjIH5JL6nbRV9ECRCbdKjojM5kw73U6dxKFpSf2bEefejSM8fZ73ahOZ/exec';
+
+/* ── BACKGROUND ── */
+var cv=document.getElementById('bg'), cx=cv.getContext('2d'), W, H, nodes=[];
+function resize(){ W=cv.width=innerWidth; H=cv.height=innerHeight; }
+function initNodes(){
+  nodes=[];
+  for(var i=0;i<120;i++) nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,r:Math.random()*2+1});
+}
+function animate(){
+  cx.clearRect(0,0,W,H);
+  for(var i=0;i<nodes.length;i++){
+    for(var j=i+1;j<nodes.length;j++){
+      var dx=nodes[i].x-nodes[j].x, dy=nodes[i].y-nodes[j].y, d=Math.sqrt(dx*dx+dy*dy);
+      if(d<130){ cx.beginPath(); cx.strokeStyle='rgba(255,107,0,'+(1-d/130)*.1+')'; cx.moveTo(nodes[i].x,nodes[i].y); cx.lineTo(nodes[j].x,nodes[j].y); cx.stroke(); }
+    }
+  }
+  for(var k=0;k<nodes.length;k++){
+    var n=nodes[k];
+    cx.beginPath(); cx.arc(n.x,n.y,n.r,0,Math.PI*2); cx.fillStyle='rgba(255,140,50,.18)'; cx.fill();
+    n.x+=n.vx; n.y+=n.vy;
+    if(n.x<0||n.x>W)n.vx*=-1; if(n.y<0||n.y>H)n.vy*=-1;
+  }
+  requestAnimationFrame(animate);
+}
+resize(); initNodes(); animate();
+window.addEventListener('resize',function(){ resize(); initNodes(); });
+
+/* ── STORAGE ── */
+var STORAGE_KEY='ai_future_summit_2026';
+function saveProgress(paymentState){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify({ step:step, answers:answers, leadId:leadId, paymentState:paymentState||null }));
+}
+function loadProgress(){
+  var saved=localStorage.getItem(STORAGE_KEY);
+  if(!saved) return null;
+  try{ return JSON.parse(saved); }catch(e){ return null; }
+}
+function clearProgress(){ localStorage.removeItem(STORAGE_KEY); }
+
+/* ── LEAD ID ── */
+function generateLeadId(){
+  return 'lead_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+}
+
+/* ── QUESTIONS ──
+   Countable steps: name, email, phone, role, interest, goal = 6
+*/
+var questions=[
+  {
+    id:'welcome',
+    bot:"Hey there 👋<br><br><strong>AI Future Summit 2026</strong> is bringing together innovators, creators, developers, founders, and AI enthusiasts for an unforgettable experience.<br><br>Ready to secure your place?",
+    type:'choice', skip:true,
+    choices:["Absolutely 🔥","Tell me more"]
+  },
+  {
+    id:'tell_more',
+    bot:"Great question! The AI Future Summit 2026 features:<br><br>🎤 <strong>Keynote speakers</strong> from top AI companies<br>🛠 <strong>Hands-on workshops</strong> you can apply immediately<br>🤝 <strong>Networking sessions</strong> with 300+ attendees<br>🚀 <strong>Live AI demos</strong> that will blow your mind<br><br>Still interested?",
+    type:'choice', skip:true, branchOnly:true,
+    choices:["Count me in 🔥","Let's register"]
+  },
+  {
+    id:'name',
+    bot:"Amazing 🚀<br><br>Before we continue, what is your full name?",
+    type:'text', validation:'name'
+  },
+  {
+    id:'email',
+    bot:"Great, <strong>{name}</strong>! What email address should we use to send your confirmation and event updates?",
+    type:'text', validation:'email'
+  },
+  {
+    id:'phone',
+    bot:"Perfect. And your phone number?",
+    type:'text', validation:'phone'
+  },
+  {
+    id:'role',
+    bot:"Which of these best describes your world right now?",
+    type:'choice',
+    choices:["Student","Developer","Founder / Entrepreneur","Creative","Corporate Professional","AI Curious"]
+  },
+  {
+    id:'interest',
+    bot:"What excites you MOST about AI right now?",
+    type:'choice',
+    choices:["Making money with AI","Automation","Building products","Content creation","Career growth","Networking"]
+  },
+  {
+    id:'goal',
+    bot:"If you leave the summit with ONE major win, what should it be?",
+    type:'choice',
+    choices:["Practical AI skills","Industry connections","Business ideas","Career direction","Confidence using AI"]
+  },
+  {
+    id:'payment',
+    bot:"You sound exactly like the kind of person this event was designed for.<br><br>Are you ready to secure your seat now?",
+    type:'choice',
+    choices:["Yes, let's do it 🔥","I'll pay later"]
+  }
+];
+
+var COUNTABLE = questions.filter(function(q){ return !q.skip && !q.branchOnly && q.id !== 'payment'; });
+var TOTAL_STEPS = COUNTABLE.length; // 6
+var step=0, answers={}, answeredCount=0;
+var leadId = generateLeadId();
+var feed=document.getElementById('chatFeed');
+var progressFill=document.getElementById('progressFill');
+
+/* ── PROGRESS ── */
+function updateProgress(){
+  answeredCount++;
+  progressFill.style.width=Math.min(Math.round((answeredCount/TOTAL_STEPS)*100),100)+'%';
+}
+
+/* ── HELPERS ── */
+function scrollBottom(){ setTimeout(function(){ window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); },50); }
+function interpolate(str){
+  if(answers.name) str=str.replace(/\{name\}/g, answers.name.split(' ')[0]);
+  return str;
+}
+
+/* ── BOT MESSAGE ── */
+function botMessage(html){
+  return new Promise(function(resolve){
+    var typing=document.createElement('div');
+    typing.className='bot-row';
+    typing.innerHTML='<div class="bot-avatar"><i class="fa-solid fa-brain"></i></div><div class="bot-bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+    feed.appendChild(typing); scrollBottom();
+    setTimeout(function(){
+      typing.remove();
+      var row=document.createElement('div');
+      row.className='bot-row';
+      row.innerHTML='<div class="bot-avatar"><i class="fa-solid fa-brain"></i></div><div class="bot-bubble">'+html+'</div>';
+      feed.appendChild(row); scrollBottom(); resolve();
+    },900);
+  });
+}
+
+/* ── USER MESSAGE ── */
+function userMessage(text){
+  return new Promise(function(resolve){
+    var row=document.createElement('div');
+    row.className='user-row';
+    row.innerHTML='<div class="user-bubble">'+text+'</div>';
+    feed.appendChild(row); scrollBottom();
+    setTimeout(resolve,300);
+  });
+}
+
+/* ── SHOW QUESTION ── */
+function showQuestion(){
+  if(step>=questions.length) return;
+  var q=questions[step];
+  if(q.branchOnly){ step++; showQuestion(); return; }
+
+  botMessage(interpolate(q.bot)).then(function(){
+
+    if(q.type==='choice'){
+      var wrap=document.createElement('div');
+      wrap.className='choices';
+      q.choices.forEach(function(choice){
+        var btn=document.createElement('button');
+        btn.className='choice-btn';
+        btn.innerText=choice;
+        btn.addEventListener('click', function(){
+          wrap.querySelectorAll('.choice-btn').forEach(function(b){ b.disabled=true; b.style.opacity='0.5'; });
+          btn.disabled=false; btn.style.opacity='1'; btn.classList.add('selected');
+          answers[q.id]=choice;
+          userMessage(choice).then(function(){
+            wrap.remove();
+
+            if(q.id==='welcome'){
+              if(choice==='Tell me more'){
+                step=questions.findIndex(function(x){ return x.id==='tell_more'; });
+                questions[step].branchOnly=false; showQuestion();
+              } else {
+                step=questions.findIndex(function(x){ return x.id==='name'; }); showQuestion();
+              }
+              return;
+            }
+
+            if(q.id==='tell_more'){
+              questions[step].branchOnly=true;
+              step=questions.findIndex(function(x){ return x.id==='name'; }); showQuestion();
+              return;
+            }
+
+            if(q.id==='payment'){
+              progressFill.style.width='100%';
+              if(choice.toLowerCase().includes('later')){
+                sendPayLater();
+                saveProgress('later');
+                document.getElementById('payLaterWrap').style.display='block';
+                scrollBottom();
+              } else {
+                showPayment();
+              }
+              return;
+            }
+
+            updateProgress(); saveProgress(); step++; showQuestion();
+          });
+        });
+        wrap.appendChild(btn);
+      });
+      feed.appendChild(wrap); scrollBottom();
+    }
+
+    if(q.type==='text'){
+      var wrap=document.createElement('div');
+      wrap.className='text-input-wrap';
+      var inputType = q.validation === 'email' ? 'email' : 'text';
+      wrap.innerHTML='<input type="'+inputType+'" class="text-input" id="textInput" placeholder="Type your answer and press Enter..." /><button class="send-btn" id="sendBtn"><i class="fa-solid fa-paper-plane"></i></button>';
+      var errDiv=document.createElement('div');
+      errDiv.className='input-error'; errDiv.id='inputError';
+      feed.appendChild(wrap); feed.appendChild(errDiv); scrollBottom();
+
+      var inp=document.getElementById('textInput');
+      var sBtn=document.getElementById('sendBtn');
+      inp.focus();
+
+      function submitText(){
+        var val=inp.value.trim();
+        var errEl=document.getElementById('inputError');
+        if(!val){ errEl.textContent='Please enter a value.'; errEl.style.display='block'; return; }
+
+        if(q.validation==='name'){
+          var parts=val.split(/\s+/);
+          if(parts.length<2||parts[1]===''){
+            errEl.textContent='Please enter your first and last name.';
+            errEl.style.display='block'; return;
+          }
+        }
+
+        if(q.validation==='email'){
+          var emailRegex=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if(!emailRegex.test(val)){
+            errEl.textContent='Please enter a valid email address.';
+            errEl.style.display='block'; return;
+          }
+        }
+
+        if(q.validation==='phone'){
+          var clean=val.replace(/[\s\-\+]/g,'');
+          if(!/^[0-9]+$/.test(clean)){ errEl.textContent='Please enter a valid number (digits only).'; errEl.style.display='block'; return; }
+          if(clean.length<10){ errEl.textContent='Please enter a valid 10-digit number.'; errEl.style.display='block'; return; }
+        }
+
+        errEl.style.display='none';
+        wrap.remove(); errDiv.remove();
+        answers[q.id]=val;
+        updateProgress(); saveProgress();
+        userMessage(val).then(function(){ step++; showQuestion(); });
+      }
+
+      inp.addEventListener('keydown',function(e){ if(e.key==='Enter') submitText(); });
+      sBtn.addEventListener('click', submitText);
+    }
+  });
+}
+
+/* ── SHOW PAYMENT ── */
+function showPayment(){
+  document.getElementById('payLaterWrap').style.display='none';
+  document.getElementById('paymentWrap').style.display='block';
+  // Populate read-only summary
+  document.getElementById('summaryName').textContent  = answers.name  || '';
+  document.getElementById('summaryEmail').textContent = answers.email || '';
+  document.getElementById('summaryPhone').textContent = answers.phone || '';
+  saveProgress('payment');
+  scrollBottom();
+}
+
+/* ── SEND PAY LATER ── */
+function sendPayLater(){
+  fetch(WEBHOOK_URL, {
+    method:'POST', mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      event:    'pay.later',
+      lead_id:  leadId,
+      name:     answers.name     || '',
+      phone:    answers.phone    || '',
+      email:    answers.email    || '',
+      role:     answers.role     || '',
+      interest: answers.interest || '',
+      goal:     answers.goal     || ''
+    })
+  }).catch(function(err){ console.warn('Pay later log failed:', err); });
+}
+
+/* ── SEND CHAT ANSWERS AFTER PAYMENT ── */
+function sendChatAnswers(reference){
+  fetch(WEBHOOK_URL, {
+    method:'POST', mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      event:     'chat.answers',
+      reference: reference,
+      email:     answers.email    || '',
+      role:      answers.role     || '',
+      interest:  answers.interest || '',
+      goal:      answers.goal     || ''
+    })
+  }).catch(function(err){ console.warn('Chat answers sync failed:', err); });
+}
+
+/* ── PAYSTACK ── */
+var PK='pk_test_dadcc832b1c7b24797e1a24897edb2bf8fcbe127';
+
+function showPayError(msg){ var el=document.getElementById('payError'); el.textContent=msg; el.style.display='block'; }
+function clearPayError(){ document.getElementById('payError').style.display='none'; }
+function setPayLoading(on){
+  document.getElementById('paySpinner').style.display=on?'block':'none';
+  document.getElementById('payBtnIcon').style.display=on?'none':'inline';
+  document.getElementById('payBtnText').textContent=on?'Processing...':'Pay GHS 500.00';
+  document.getElementById('payBtn').disabled=on;
+}
+
+function launchPaystack(){
+  clearPayError();
+  var name  = answers.name  || '';
+  var email = answers.email || '';
+  var phone = answers.phone || '';
+
+  if(!name || !email || !phone){
+    showPayError('Some details are missing. Please go back and complete the form.');
+    return;
+  }
+
+  setPayLoading(true);
+
+  var handler=PaystackPop.setup({
+    key:PK,
+    email:email,
+    amount:50000,
+    currency:'GHS',
+    metadata:{
+      custom_fields:[
+        {display_name:'Full Name', variable_name:'full_name', value:name},
+        {display_name:'Phone',     variable_name:'phone',     value:phone},
+        {display_name:'Lead ID',   variable_name:'lead_id',   value:leadId},
+        {display_name:'Role',      variable_name:'role',      value:answers.role||''},
+        {display_name:'Interest',  variable_name:'interest',  value:answers.interest||''},
+        {display_name:'Goal',      variable_name:'goal',      value:answers.goal||''}
+      ]
+    },
+    callback:function(response){
+      setPayLoading(false);
+      sendChatAnswers(response.reference);
+      clearProgress();
+      document.getElementById('paymentForm').style.display='none';
+      document.getElementById('successBox').style.display='block';
+      document.getElementById('successRef').innerText=response.reference;
+      scrollBottom();
+    },
+    onClose:function(){ setPayLoading(false); }
+  });
+
+  handler.openIframe();
+}
+
+/* ── RESTORE SESSION ── */
+function restoreSession(){
+  var saved=loadProgress();
+  if(!saved){ setTimeout(function(){ showQuestion(); },1000); return; }
+  step=saved.step||0;
+  answers=saved.answers||{};
+  if(saved.leadId) leadId=saved.leadId;
+
+  var restoredKeys=Object.keys(answers).filter(function(k){
+    var q=questions.find(function(x){ return x.id===k; });
+    return q && !q.skip && !q.branchOnly && q.id!=='payment';
+  });
+  answeredCount=restoredKeys.length;
+  progressFill.style.width=Math.min(Math.round((answeredCount/TOTAL_STEPS)*100),100)+'%';
+
+  if(Object.keys(answers).length>0){
+    var row=document.createElement('div');
+    row.className='bot-row';
+    row.innerHTML='<div class="bot-avatar"><i class="fa-solid fa-brain"></i></div><div class="bot-bubble">Welcome back <strong>'+(answers.name||'')+'</strong> 👋<br><br>Your registration progress has been restored.</div>';
+    feed.appendChild(row);
+  }
+
+  if(saved.paymentState==='later'){ document.getElementById('payLaterWrap').style.display='block'; return; }
+  if(saved.paymentState==='payment'){ showPayment(); return; }
+  showQuestion();
+}
+
+restoreSession();
+</script>
+</body>
+</html>
